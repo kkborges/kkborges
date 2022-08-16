@@ -6,7 +6,6 @@ import requests
 
 url = "https://shrouded-spire06255.herokuapp.com/v1/entry_raws"
 print(url)
-
 headers = {"Accept: application/json" "Content-type: application/json"}
 
 print(headers)
