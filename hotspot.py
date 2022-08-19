@@ -1,3 +1,5 @@
+import platform
+
 import psutil
 # TODO: encapsular os códigos de ProcessoP.py e topProcess.py aqui!!
 
@@ -6,13 +8,10 @@ class Hotspot:
         pass
             # hostname = platform.node()
             # return self.hostname
-    def getOS(self) -> object:
-        pass
-            # OS = psutil.getSo()
-            # return self.os
-    def getOSVersion(self):
-        pass
-            # return self.os_version
+    def getOS(self) -> str:
+        return platform.system()
+    def getOSVersion(self) -> str:
+        return platform.version()
 
     def getToken(self):
         pass
