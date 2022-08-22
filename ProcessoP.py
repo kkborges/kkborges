@@ -5,6 +5,8 @@ import sys
 import psutil
 from typing import List
 
+from JSON import json
+
 
 class Processo:
     host: str = ""
@@ -15,7 +17,7 @@ class Processo:
     bytesSent: str = ""
     bytesRecv: str = ""
     ip: str = ""
-    hd: str = ""  # TODO: dividir valores? (no momento recebe o valor de uma tupla)
+#    hd: str = ""  # TODO: Verificar qual os significado desse valor
 
     def __str__(self) -> str:
         to_str = "Processo("
@@ -26,9 +28,10 @@ class Processo:
         to_str += f"ProcessUser: {self.user}, "
         to_str += f"BytesRecv: {self.bytesRecv}, "
         to_str += f"BytesSent: {self.bytesSent}, "
-        to_str += f"ProcessIP: {self.ip}, "
-        to_str += f"ProcessHD: {self.hd})\n"
+        to_str += f"ProcessIP: {self.ip})\n"
+#        to_str += f"ProcessHD: {self.hd})\n"
         return to_str
+
     def __repr__(self) -> str:
         return f"({self.name}, {self.cpu}, {self.memory})"
 
@@ -55,6 +58,13 @@ class Processo:
         except (IOError, OSError) as e:
             print(e)
 
+    def as_dict(self) -> json:
+        return {"name": self.name,
+                "cpu_perc": self.cpu,
+                "ram_perc": self.memory,
+                "disk_usage_perc": 0.0} #TODO
+                #"disk_usage_perc": self.hd}
+
 
 # TODO: onde colocar essa função
 def coletarProcessos() -> List[Processo]:
@@ -63,12 +73,13 @@ def coletarProcessos() -> List[Processo]:
     for proc in psutil.process_iter():
         processo = Processo()
         try:
-            #if cnt == 10:  # TODO: apenas para debug, para depois de 5 processos que deram sucesso
+            # if cnt == 10:  # TODO: apenas para debug, para depois de 5 processos que deram sucesso
             #    break
             processo.name = proc.name()
             processo.memory = proc.memory_percent()
-            processo.cpu = proc.cpu_percent(interval=0.1) #TODO: precisei colocar um valor > 0.0 pra chegar em uma resposta válida
-            processo.hd = proc.io_counters()
+            processo.cpu = proc.cpu_percent(
+                interval=0.1)  # TODO: precisei colocar um valor > 0.0 pra chegar em uma resposta válida
+#            processo.hd =
             processo.user = proc.username()
             processo.bytesSent, processo.bytesRecv, *_ = psutil.net_io_counters()
             processo.ip = socket.gethostbyname(socket.gethostname())
