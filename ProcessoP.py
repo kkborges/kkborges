@@ -1,4 +1,5 @@
 import datetime
+import math
 import platform
 import socket
 import sys
@@ -60,10 +61,9 @@ class Processo:
 
     def as_dict(self) -> json:
         return {"name": self.name,
-                "cpu_perc": self.cpu,
-                "ram_perc": self.memory,
-                "disk_usage_perc": 0.0} #TODO
-                #"disk_usage_perc": self.hd}
+                "cpu_perc": math.ceil(self.cpu),
+                "ram_perc": math.ceil(self.memory),
+                "disk_usage_perc": 0} #TODO
 
 
 # TODO: onde colocar essa função
