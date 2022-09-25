@@ -73,8 +73,6 @@ def coletarProcessos() -> List[Processo]:
     for proc in psutil.process_iter():
         processo = Processo()
         try:
-            # if cnt == 10:  # TODO: apenas para debug, para depois de 5 processos que deram sucesso
-            #    break
             processo.name = proc.name()
             processo.memory = proc.memory_percent()
             processo.cpu = proc.cpu_percent(
@@ -84,8 +82,6 @@ def coletarProcessos() -> List[Processo]:
             processo.bytesSent, processo.bytesRecv, *_ = psutil.net_io_counters()
             processo.ip = socket.gethostbyname(socket.gethostname())
             processo.host = platform.node()
-            # print(processo) # TODO: apenas para debug
-            # cnt += 1
             processo.gravarlog(status="Sucess")
             processos.append(processo)
         except psutil.ZombieProcess:

@@ -8,7 +8,6 @@ import topProcessos
 from JSON import json
 from ProcessoP import Processo
 
-
 class Hotspot:
     hostname: str = ""
     os: str = ""
@@ -32,17 +31,20 @@ class Hotspot:
     def as_dict(self) -> json:
         self.get_host_info()
         return {"hotspot": {"hostname": self.hostname,
-                            "os": "WINDOWS", #self.os, TODO
-                            "os_version": "10", #self.os_version,
+                            "os": self.os,
+                            "os_version": self.os_version,
                             "token": passwords.token,
                             "ip": self.ip,
                             "download_speed_mbps": "90",  # TODO: colocar valor real
                             "upload_speed_mbps": "15",  # TODO: colocar valore real
-                            "host": {"cpu_perc": 99, #TODO #math.ceil(self.cpu_perc),
+                            "host": {"cpu_perc": math.ceil(self.cpu_perc),
                                      "ram_perc": math.ceil(self.ram_perc),
                                      "disk_usage_perc": math.ceil(self.disk_usage_perc),
                                      "top_processes": self.top_processes,
-                                     "chosen_processes": []
+                                     "chosen_processes": {"name": "teamviewer.exe", #TODO:
+                                                            "cpu_perc": "0",
+                                                            "ram_perc": "0",
+                                                            "disk_usage_perc": "22"}
                                      }
                             }
                 }

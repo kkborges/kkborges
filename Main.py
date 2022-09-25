@@ -68,10 +68,9 @@ def is_allowed_execute(schedule):
 
 
 def main():
-    # if alreadyopen():
-    #     showErrorAlert('Erro: Múltiplas instâncias', 'O programa já está em execução')
-    #     exit(1)
-    # print("Ainda nao está aberto")
+    if alreadyopen():
+        showErrorAlert('Erro: Múltiplas instâncias', 'O programa já está em execução')
+        exit(1)
 
     schedule = Requests.getschedule()
 

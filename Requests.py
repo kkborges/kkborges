@@ -14,13 +14,13 @@ def sendhotspot(json_dict: dict):
 
     jsonStr_encoded = base64.b64encode(json.dumps(json_dict).encode('utf-8'))
 
-    #print("jsonStr_encoded: " + str(jsonStr_encoded.decode('utf-8')))
+    print("jsonStr_encoded: " + str(jsonStr_encoded.decode('utf-8')))
     json_final = {"entry_raw": {"payload": str(jsonStr_encoded.decode('utf-8') + "=\n")}}
 
     response = requests.post(url, headers=headers, json=json_final, verify=False)
 
     print("status code", response.status_code)
-    #print("response.json()", response.json())
+    print("response.json()", response.json())
 
 
 # TODO: ver qual é o formato do tempo?
@@ -34,12 +34,12 @@ def convert_date_to_int(time: str) -> int:
         # TODO: lidar melhor
         exit(1)
 
-    print(f"{time}, {time[0]}, {int(time[0])}")
+    print(f"{int(time[0])} {int(time[1])} {int(time[2])} {int(time[3])}")
     hour = int(time[0]) * 10 + int(time[1])
     minute = int(time[2]) * 10 + int(time[3])
 
     if time[4:] == "PM":
-        hour += 10
+        hour += 12
 
     print(f"{hour}:{minute}")
     return hour * 60 + minute
@@ -49,8 +49,10 @@ def getschedule() -> dict:
     """"
     Pega os horários que é permitido executar
     """
-    r = requests.get("https://shrouded-spire-06255.herokuapp.com/v1/hotspots/ddba573f-ecfd-4f1f-895d-08ca8f234c5e.json")
+    tmp = f"https://shrouded-spire-06255.herokuapp.com/v1/hotspots/{passwords.token}.json"
+    r = requests.get(tmp)
     r = r.json()
+
     hotspot = r['hotspot']
     # TODO: lidar com erros
     schedule = {'active': r['active'], 'sun': hotspot['sun'], 'mon': hotspot['mon'], 'tue': hotspot['tue'],
@@ -73,17 +75,17 @@ def teste():
                              "ip": "120.211.3.111",
                              "download_speed_mbps": "90",
                              "upload_speed_mbps": "15",
-                             "host": {"cpu_perc": "0",
-                                      "ram_perc": "0",
-                                      "disk_usage_perc": "22",
+                             "host": {"cpu_perc": "40",
+                                      "ram_perc": "40",
+                                      "disk_usage_perc": "40",
                                       "top_processes": [{"name": "lua.exe",
-                                                         "cpu_perc": "0",
-                                                         "ram_perc": "0",
-                                                         "disk_usage_perc": "22"}],
+                                                         "cpu_perc": "45",
+                                                         "ram_perc": "45",
+                                                         "disk_usage_perc": "45"}],
                                       "chosen_processes": [{"name": "teamviewer.exe",
-                                                            "cpu_perc": "0",
-                                                            "ram_perc": "0",
-                                                            "disk_usage_perc": "22"}]
+                                                            "cpu_perc": "45",
+                                                            "ram_perc": "45",
+                                                            "disk_usage_perc": "45"}]
                                       }
                              }
                  })
@@ -91,5 +93,4 @@ def teste():
     convert_date_to_int("1200AM")
     convert_date_to_int("0950PM")
     convert_date_to_int("0800AM")
-
 teste()

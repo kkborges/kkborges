@@ -1,5 +1,4 @@
 from typing import List
-
 from ProcessoP import Processo, coletarProcessos
 
 def cmp(p: Processo):
@@ -10,7 +9,4 @@ def topprocessos() -> List[Processo]:
 
     processos = coletarProcessos()
     processos.sort(reverse=True, key=cmp)
-    # print(processos[:5])
     return processos[:5]
-
-topprocessos()
