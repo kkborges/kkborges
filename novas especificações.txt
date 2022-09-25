@@ -1,0 +1,31 @@
+validar se existe um processo já executando
+instalação linux
+dia execução
+horário para execução
+validação versão
+
+No iniciar Main verificar se está ativo.
+se ativo continua monitorar
+se desativado coloca o sleep para 5 minutos e verifica novamente se está ativo...
+
+
+serviço agente que inicia o monitor
+serviço que é o monitor (envia os dados e verifica se o agente está OK e se tem somente uma instância)
+se mais de 1 processo, kill em todos
+verifica o processo novamente
+
+
+agente
+ele vai subir como serviço
+e ele vai estar monitorando o coletor
+ele verifica o uso de cpu e memória
+verifica o status do coleto
+
+Ele faz um get na api e baixa as informações de dias/horários e o status do hotspot
+Hotspot = grupo de estações que estão sendo monitoradas
+HotspotMember é a estação monitorada
+
+
+Instalador para Windows como serviço
+Instalador para Linux como serviço
+
