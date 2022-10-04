@@ -34,7 +34,7 @@ def alreadyopen() -> bool:
     """
     pid = os.getpid()
     p = psutil.Process(pid)
-    print(psutil.Process(pid))
+    # print(psutil.Process(pid))
     name = p.name()
     process_same_name = find_process_id_by_name(name)
     # for i in process_same_name:
@@ -60,25 +60,31 @@ def is_allowed_execute(schedule):
     start_time = schedule['start_time']
     end_time = schedule['end_time']
 
-    print(f"Agora: {hour * 60 + minute}, start_time: {start_time}, end_time:{end_time} ")
+    # print(f"Agora: {hour * 60 + minute}, start_time: {start_time}, end_time:{end_time} ")
 
     if start_time <= hour * 60 + minute <= end_time:
         return True
     return False
 
 
+def hora_min_sec(sec:int)->str:
+    hora = sec//(24 * 60)
+    sec = sec % (24 * 60)
+    min = sec // 60
+    sec = sec % 60
+    return f"{hora}:{min}:{sec}"
 def main():
     if alreadyopen():
         showErrorAlert('Erro: Múltiplas instâncias', 'O programa já está em execução')
         exit(1)
 
     schedule = Requests.getschedule()
-
     temposleep = 60
     while True:
         # Se não é permitido executar dorme por 5 minutos
         if not is_allowed_execute(schedule):
             print('Executando fora do horário')  # TODO: Fazer log disso?
+            print(f"Agora sao: {datetime.now().strftime('%H:%M')}, (inicio do agente) às {hora_min_sec(schedule['start_time'])}, (fim) às {hora_min_sec(schedule['end_time'])}" )
             time.sleep(5 * 60)
             continue
         hotspot = Hotspot()

@@ -2,7 +2,7 @@ import base64
 import requests
 import json
 import passwords
-
+import iso8601
 
 # TODO: fazer comentários
 
@@ -23,27 +23,14 @@ def sendhotspot(json_dict: dict):
     print("response.json()", response.json())
 
 
-# TODO: ver qual é o formato do tempo?
-# Considerando o formato 0000AM ou 0000PM
-def convert_date_to_int(time: str) -> int:
-    if len(time) == 0:
-        return 0
+# Considera o formato ISO8061, e.g 0001-01-01T05:00:00.000Z
+def convert_date_to_seconds(time: str) -> int:
+    # print(f"(convert_data_to_seconds) horário recebido: {time}")
+    d = iso8601.parse_date(time)
+    # print(f"{d.hour}:{d.minute}:{d.second}")
 
-    if len(time) != 6:
-        print("Formato errado")
-        # TODO: lidar melhor
-        exit(1)
-
-    print(f"{int(time[0])} {int(time[1])} {int(time[2])} {int(time[3])}")
-    hour = int(time[0]) * 10 + int(time[1])
-    minute = int(time[2]) * 10 + int(time[3])
-
-    if time[4:] == "PM":
-        hour += 12
-
-    print(f"{hour}:{minute}")
-    return hour * 60 + minute
-
+    to_seconds = d.hour * 24 * 60 + d.minute*60 + d.second;
+    return to_seconds
 
 def getschedule() -> dict:
     """"
@@ -57,14 +44,9 @@ def getschedule() -> dict:
     # TODO: lidar com erros
     schedule = {'active': r['active'], 'sun': hotspot['sun'], 'mon': hotspot['mon'], 'tue': hotspot['tue'],
                 'wed': hotspot['wed'], 'thu': hotspot['thu'], 'fri': hotspot['fri'], 'sat': hotspot['sat'],
-                'start_time': convert_date_to_int(hotspot['start_time']),
-                'end_time': convert_date_to_int(hotspot['end_time'])}
-
-    # estou lidando aqui com o caso de não ser fornecido o end_time
-    if schedule['end_time'] == 0:
-        schedule['end_time'] = 24 * 60
+                'start_time': convert_date_to_seconds(hotspot['start_time']),
+                'end_time': convert_date_to_seconds(hotspot['end_time'])}
     return schedule
-
 
 # TODO: Melhorar testes
 def teste():
@@ -89,8 +71,3 @@ def teste():
                                       }
                              }
                  })
-
-    convert_date_to_int("1200AM")
-    convert_date_to_int("0950PM")
-    convert_date_to_int("0800AM")
-teste()
