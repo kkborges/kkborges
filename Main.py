@@ -54,25 +54,21 @@ def is_allowed_execute(schedule):
     if not schedule[str_day]:
         return False
 
-    hour = now.hour
-    minute = now.minute
-
+    to_seconds = now.hour * 60 + now.minute
     start_time = schedule['start_time']
     end_time = schedule['end_time']
 
     # print(f"Agora: {hour * 60 + minute}, start_time: {start_time}, end_time:{end_time} ")
 
-    if start_time <= hour * 60 + minute <= end_time:
+    if start_time <= to_seconds <= end_time:
         return True
     return False
 
 
-def hora_min_sec(sec:int)->str:
-    hora = sec//(24 * 60)
-    sec = sec % (24 * 60)
-    min = sec // 60
-    sec = sec % 60
-    return f"{hora}:{min}:{sec}"
+def hora_min_sec(min:int)->str:
+    hora = min//(60)
+    min = min % 60
+    return f"{hora}:{min}"
 def main():
     if alreadyopen():
         showErrorAlert('Erro: Múltiplas instâncias', 'O programa já está em execução')

@@ -2,7 +2,6 @@ import base64
 import requests
 import json
 import passwords
-import iso8601
 
 # TODO: fazer comentários
 
@@ -23,29 +22,32 @@ def sendhotspot(json_dict: dict):
     print("response.json()", response.json())
 
 
-# Considera o formato ISO8061, e.g 0001-01-01T05:00:00.000Z
+#Considera o formato AM PM
 def convert_date_to_seconds(time: str) -> int:
-    # print(f"(convert_data_to_seconds) horário recebido: {time}")
-    d = iso8601.parse_date(time)
-    # print(f"{d.hour}:{d.minute}:{d.second}")
+    # print(f"(convert_data_to_seconds) horário recebido: {time[:4]}")
+    hour = int(time[0:2])
+    if (time[4:] == "PM"):
+        hour += 12
 
-    to_seconds = d.hour * 24 * 60 + d.minute*60 + d.second;
+    minute = int(time[2:4])
+    # print(f"{hour}:{minute}")
+    to_seconds = hour * 60 + minute
+    # print(to_seconds)
     return to_seconds
 
 def getschedule() -> dict:
     """"
     Pega os horários que é permitido executar
     """
-    tmp = f"https://shrouded-spire-06255.herokuapp.com/v1/hotspots/{passwords.token}.json"
-    r = requests.get(tmp)
-    r = r.json()
 
+    r = requests.get(f'https://shrouded-spire-06255.herokuapp.com/v1/hotspots/{passwords.token}.json')
+    r = r.json()
     hotspot = r['hotspot']
     # TODO: lidar com erros
     schedule = {'active': r['active'], 'sun': hotspot['sun'], 'mon': hotspot['mon'], 'tue': hotspot['tue'],
                 'wed': hotspot['wed'], 'thu': hotspot['thu'], 'fri': hotspot['fri'], 'sat': hotspot['sat'],
-                'start_time': convert_date_to_seconds(hotspot['start_time']),
-                'end_time': convert_date_to_seconds(hotspot['end_time'])}
+                'start_time': convert_date_to_seconds(hotspot['start_time_str']),
+                'end_time': convert_date_to_seconds(hotspot['end_time_str'])}
     return schedule
 
 # TODO: Melhorar testes
