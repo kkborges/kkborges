@@ -1,6 +1,5 @@
-def ler_token() -> str:
+def ler_token():
     with open("token.txt", "r",) as arquivo:
         token = arquivo.read()
-    return str(token)
+    return token
 
-token:str=ler_token()

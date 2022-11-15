@@ -28,19 +28,21 @@ def convert_date_to_seconds(time: str) -> int:
     hour = int(time[0:2])
     if (time[4:] == "PM"):
         hour += 12
-
+    print(hour)
     minute = int(time[2:4])
+    print(minute)
     # print(f"{hour}:{minute}")
     to_seconds = hour * 60 + minute
     # print(to_seconds)
+    print(to_seconds)
     return to_seconds
 
 def getschedule() -> dict:
     """"
     Pega os horários que é permitido executar
     """
-
-    r = requests.get(f'https://shrouded-spire-06255.herokuapp.com/v1/hotspots/{passwords.token}.json')
+    token = passwords.ler_token()
+    r = requests.get(f'https://shrouded-spire-06255.herokuapp.com/v1/hotspots/{token}.json')
     r = r.json()
     hotspot = r['hotspot']
     # TODO: lidar com erros
@@ -50,26 +52,5 @@ def getschedule() -> dict:
                 'end_time': convert_date_to_seconds(hotspot['end_time_str'])}
     return schedule
 
-# TODO: Melhorar testes
-def teste():
-    sendhotspot({"hotspot": {"hostname": "DESK932LK-ELO",
-                             "os": "WINDOWS",
-                             "os_version": "10",
-                             "token": passwords.token,
-                             "ip": "120.211.3.111",
-                             "download_speed_mbps": "90",
-                             "upload_speed_mbps": "15",
-                             "host": {"cpu_perc": "40",
-                                      "ram_perc": "40",
-                                      "disk_usage_perc": "40",
-                                      "top_processes": [{"name": "lua.exe",
-                                                         "cpu_perc": "45",
-                                                         "ram_perc": "45",
-                                                         "disk_usage_perc": "45"}],
-                                      "chosen_processes": [{"name": "teamviewer.exe",
-                                                            "cpu_perc": "45",
-                                                            "ram_perc": "45",
-                                                            "disk_usage_perc": "45"}]
-                                      }
-                             }
-                 })
+
+

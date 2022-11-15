@@ -1,50 +1,59 @@
-import math
 import platform
 import socket
-from typing import List
 import psutil
+import speedtest
+
 import passwords
 import topProcessos
-from JSON import json
-from ProcessoP import Processo
 
-class Hotspot:
-    hostname: str = ""
-    os: str = ""
-    os_version: str = ""
-    ip: str = ""
-    cpu_perc: float = 0.0
-    ram_perc: float = 0.0
-    disk_usage_perc: float = 0.0
-    top_processes: List[Processo] = []
 
-    def get_host_info(self):
-        self.hostname = platform.node()
-        self.os = platform.system()
-        self.os_version = platform.version()
-        self.ip = socket.gethostbyname(socket.gethostname())
-        self.cpu_perc = psutil.cpu_percent(interval=0.1)
-        _, _, self.ram_perc, *_ = psutil.virtual_memory()
-        *_, self.disk_usage_perc = psutil.disk_usage('/')
-        self.top_processes = [p.as_dict() for p in topProcessos.topprocessos()]
+def get_velocidade_internet():
+    tx_down = int( speedtest.Speedtest().download() )
+    tx_up = int( speedtest.Speedtest().upload() )
+    tx_down.to_bytes( signed=True, byteorder='little', length=8 )
+    tx_up.to_bytes( signed=True, byteorder='little', length=8 )
+    tx_down = float( tx_up )
+    tx_up = float( tx_up )
+    return tx_down, tx_up
 
-    def as_dict(self) -> json:
-        self.get_host_info()
-        return {"hotspot": {"hostname": self.hostname,
-                            "os": self.os,
-                            "os_version": self.os_version,
-                            "token": passwords.token,
-                            "ip": self.ip,
-                            "download_speed_mbps": "90",  # TODO: colocar valor real
-                            "upload_speed_mbps": "15",  # TODO: colocar valore real
-                            "host": {"cpu_perc": math.ceil(self.cpu_perc),
-                                     "ram_perc": math.ceil(self.ram_perc),
-                                     "disk_usage_perc": math.ceil(self.disk_usage_perc),
-                                     "top_processes": self.top_processes,
-                                     "chosen_processes": {"name": "teamviewer.exe", #TODO:
-                                                            "cpu_perc": "0",
-                                                            "ram_perc": "0",
-                                                            "disk_usage_perc": "22"}
-                                     }
-                            }
-                }
+def get_host_info():
+    hotspot: dict = {}
+    hostname = platform.node()
+    OS = platform.system()
+    os_version = platform.version()
+    ip = socket.gethostbyname( socket.gethostname() )
+    cpu_perc = (psutil.cpu_percent( interval=1 ))
+    ram = psutil.virtual_memory()
+    ram_perc = ram[2]
+    # disk_usage_perc = str( psutil.disk_usage( 'c:\\' ).percent )
+    download_speed_mbps, upload_speed_mbps = get_velocidade_internet()
+    if OS == 'Windows':
+        disk_usage_perc = str( psutil.disk_usage( path='c:\\' ).percent )
+    else:
+        disk_usage_perc = str( psutil.disk_usage( "/" ).percent )
+    #chosen_process: dict = top_processes.get( top_processes['name'] )
+    token = passwords.ler_token()
+    topProcess = topProcessos.get_top_five_process()
+    print(topProcess)
+    chosen_: dict = topProcessos.get_chosen_process('pycharm64.exe')
+    print(chosen_)
+    json_: dict = {"hotspot": {"token": token, "host": {"hostname": hostname,
+                                                               "os": OS,
+                                                               "os_version": os_version,
+                                                               "ip": ip,
+                                                               "cpu_perc": cpu_perc,
+                                                               "ram_perc": ram_perc,
+                                                               "disk_usage_perc": disk_usage_perc,
+                                                               "download_speed_mbps": download_speed_mbps,
+                                                               "upload_speed_mbps": upload_speed_mbps,
+                                                               "chosen_process": topProcessos.get_chosen_process(chosen="chrome.exe"),
+                                                               "top_process": topProcessos.get_top_five_process()
+                                                               }
+                               }
+                   }
+
+    print(json_)
+    return json_
+
+
+
