@@ -12,6 +12,7 @@ Pegando informações como:
     total_memória
     total_hd
 
+
     processoPrincipal (processo duplicado)
         {
             "name": "lua.exe",

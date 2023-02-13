@@ -28,4 +28,3 @@ def gravarlog(self, status) -> None:
             f.writelines( log )
     except (IOError, OSError) as e:
         print( e )
-

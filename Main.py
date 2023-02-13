@@ -25,14 +25,15 @@ def is_allowed_execute(schedule):
 
     # print(f"Agora: {hour * 60 + minute}, start_time: {start_time}, end_time:{end_time} ")
 
-    if start_time <= to_seconds <= end_time:
+    if start_time <= end_time:
         return True
     return False
 
 
 def hora_min_sec(min:int)->str:
-    hora = min//(60)
-    min = min % 60
+    hora = min % 60
+    min = min // 60
+    print(f"{hora}:{min}")
     return f"{hora}:{min}"
 def main():
     if alreadyopen():
@@ -40,13 +41,13 @@ def main():
         exit(1)
 
     schedule = Requests.getschedule()
-    temposleep = 60
+    temposleep = 600
     hotspot = spot.get_host_info()
     while True:
         # Se não é permitido executar dorme por 5 minutos
         if not is_allowed_execute(schedule):
             print('Executando fora do horário')  # TODO: Fazer log disso?
-            print(f"Agora sao: {datetime.now().strftime('%H:%M')}, (inicio do agente) às {hora_min_sec(schedule['start_time_str'])}, (fim) às {hora_min_sec(schedule['end_time_str'])}" )
+            print(f"Agora sao: {datetime.now().strftime('%H:%M')}, (inicio do agente) às {hora_min_sec(schedule['start_time'])}, (fim) às {hora_min_sec(schedule['end_time'])}" )
             time.sleep(5 * 60)
             continue
 
@@ -77,13 +78,12 @@ def alreadyopen() -> bool:
     """
     pid = os.getpid()
     p = psutil.Process(pid)
-    # print(psutil.Process(pid))
     name = p.name()
     process_same_name = find_process_id_by_name(name)
-    # for i in process_same_name:
-    #     print(i)
+    for i in process_same_name:
+        print(i)
     return False
-    # return len(l) > 1
+    #return len(l) > 1
 
 if __name__ == "__main__":
     main()

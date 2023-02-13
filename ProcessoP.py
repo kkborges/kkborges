@@ -51,9 +51,6 @@ class Processo:
                 "ram_perc": int(self.memory) ,
                 "disk_usage_perc": self.hd}
 
-
-
-
 def coletarProcessos():
     processos = []
     count = 1

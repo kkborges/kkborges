@@ -8,7 +8,6 @@ No iniciar Main verificar se está ativo.
 se ativo continua monitorar
 se desativado coloca o sleep para 5 minutos e verifica novamente se está ativo...
 
-
 serviço agente que inicia o monitor
 serviço que é o monitor (envia os dados e verifica se o agente está OK e se tem somente uma instância)
 se mais de 1 processo, kill em todos
